@@ -1,0 +1,30 @@
+@charset "UTF-8";
+html{
+  margin: auto;
+  min-width:600px;
+  background: white;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: black;
+}
+body{
+  min-width:600px;
+  background: transparent;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: black;
+}
+
+.navbar{
+  background: #000000;
+}
+#content {
+margin: auto;
+padding: 2%;
+width: 87%
+}
+
