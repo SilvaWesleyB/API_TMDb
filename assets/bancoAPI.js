@@ -26,7 +26,7 @@ function buscarFilmes(filme){
 
 			//mostraFilmes += '<p><h4 class="">'+filmePesquisado[i].title+'</h4></p>';
 			//mostraFilmes += '<span>'+filmePesquisado[i].release_date+'</span>'
-			//mostraFilmes += '<p>' + filmePesquisado[i].overview + '</p></div>';			
+			mostraFilmes += '<p>' + filmePesquisado[i].overview + '</p></div>';			
 			mostraFilmes += '</div>';
 
 			console.log(filmePesquisado[i].title);			

@@ -13,25 +13,32 @@
 
 </head>
 
-<body>
+<body onload="weekFilmes()">
   <div class="header">
     <img class="d-block w-100" src="img/banner.png" alt="Banner">
   </div>
 
   <div id="navbar">
-    <nav class="navbar">
+    <div>
       <div class="brand">
         <a href=""><img src="img/logo.jpg" height="40px" width="40px" style="border-radius: 15px"></a>
       </div>
-      <form class="form-inline" method="get" id="form">
-        <input class="form-control" id="pesquisarFilme" type="text" placeholder="Pesquisar Filme" aria-label="Pesquisar">
-        <button class="btn btn-primary" type="submit">Pesquisar</button>
-      </form>
+      <a href="index.html" class="active" style="color: #FF0000;">Home</a>
+      <a href="desejo.html">Lista de Desejo</a>
+    </div>
+    <form class="form-inline" method="get" id="form">
+      <input class="form-control" id="pesquisarFilme" type="text" placeholder="Pesquisar Filme" aria-label="Pesquisar">
+      <button class="btn btn-primary" type="submit">Pesquisar</button>
+    </form>
     </nav>
   </div>
 
   <div class="container">
-    <div class="row" id="mFilmes">
+    <div class="row" id="title">
+      
+    </div>
+    <div class="row" id="root">
+      
     </div>
   </div>
 
@@ -41,7 +48,7 @@
     </div>
   </footer>
 
-  <script src="./assets/search.js"></script>
+  <script src="./assets/main.js"></script>
   <script src="./assets/week.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
