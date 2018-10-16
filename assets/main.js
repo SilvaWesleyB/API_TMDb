@@ -1,85 +1,93 @@
-//Variaveis para utilização
-var API_key = '0ee05a8fe5aefee62bbcafda1e92b900';
-var Base_URL = 'https://api.themoviedb.org/3/';
-var Base_IMG = 'https://image.tmdb.org/t/p/';
+// Variaveis 
+var urlBase ="https://api.themoviedb.org/3/"
+var urlImg = 'https://image.tmdb.org/t/p/';
+var apiKey = "0ee05a8fe5aefee62bbcafda1e92b900";
 
-//Pegar Formulario ao clicar no botão de Pesquisar
-document.getElementById('form').addEventListener('submit', pesquisarFilmes);
+// Requisição Week/Movie pelo XMLHttp 
+var request = new XMLHttpRequest();
+request.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var data = JSON.parse(this.responseText);
+        weekFilmes(data.results);
+    }
+};
+request.open("GET", urlBase+"trending/movie/week?api_key="+apiKey, true);
+request.send();
 
-//função de pegar o valor da pesquisa
-function pesquisarFilmes(e){
-	var pesquisarFilme = document.getElementById("pesquisarFilme").value;
-	buscarFilmes(pesquisarFilme);
-	console.log(e);
-	e.preventDefault();
+//Função após resposta XMLHttp
+function weekFilmes(filme) {
+    var mostar = "";
+    var i;
+    for(i = 0; i < filme.length; i++) {
+    	mostar += '<div class="card" style="width: 15rem;">';
+		mostar += '<img class="img-thumbnail" alt="Imagem não Encontrada!" src="'+urlImg+'w200/'+filme[i].poster_path+'">';
+		mostar += '<div class="card-body">';
+		mostar += '<h5 class="text-muted">'+filme[i].title+'</h5>';
+		mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+filme[i].release_date+'</small></p>';
+		mostar += '<p class="card-text"><small class="text-muted">Média: '+filme[i].vote_average+'</small></p>';
+        mostar += '<button type="button" class="btn btn-dark" id="btnDesejo" onclick="info('+filme[i].id+')";>Add Lista Desejo</button>';
+		mostar += '</div>';
+		mostar += '</div>';
+    }
+    document.getElementById("root").innerHTML = mostar;
 }
 
-//Função realizando pesquisa e mostrando no html.
-function buscarFilmes(pesquisarFilme){
-	axios.get(Base_URL+'search/movie?api_key='+API_key+'&query='+pesquisarFilme)
-		.then(function(response){
-		console.log(response);
-		var nomeFilme  =  response.data.results;
-		var cardFilme = '';
-		var buscaTitle = '';
-		console.log(nomeFilme);
+//__________________________________________Fim Week___________________________________________________________________________________
+// Variavel que pega o Botao.
+var pPesquisa = document.getElementById("pPesquisa");
 
-		//criando Titulo
-		buscaTitle += '<h1> Resultado da Busca </h1>';
+// Adicionado a função onclick no Botão, pegando o valor digitado no Form.
+pPesquisa.onclick = function () {
 
-		//Card dos Filmes
-		for (var i = 0; i < nomeFilme.length; i++) {
-			cardFilme += '<div class="card" style="width: 15rem;">';
-			cardFilme += '<img class="img-thumbnail" alt="Imagem não Encontrada!" src="'+Base_IMG+'w200/'+nomeFilme[i].poster_path+'">';
-			cardFilme += '<div class="card-body">';
-			cardFilme += '<h5 class="text-muted">'+nomeFilme[i].title+'</h5>';
-			cardFilme += '<p class="card-text">'+nomeFilme[i].overview+'</p>';
-			cardFilme += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+nomeFilme[i].release_date+'</small></p>';
-			cardFilme += '<p class="card-text"><small class="text-muted">Média: '+nomeFilme[i].vote_average+'</small></p>';
-			cardFilme += '</div>';
-			cardFilme += '</div>';
-			
+    // Pegadno Value
+    var pValue = document.getElementById("pValue").value;
 
-		console.log(nomeFilme[i].title);			
-		}
-		//mostrando html
-		document.getElementById('root').innerHTML = cardFilme;
-		document.getElementById('title').innerHTML = buscaTitle;			
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            mPesquisa(data.results);
+        }
+    };
 
-		
-	});
+    // Abrindo Requisição.
+    request.open("GET", urlBase+'search/movie?api_key='+apiKey+'&query='+pValue, true);
+
+    // Add a função de Submit no Form.
+    document.getElementById('form').addEventListener('submit', pesquisarFilmes);
+
+    // Função Pesquisa.
+    function pesquisarFilmes(e){
+        //console.log(e);
+        e.preventDefault();
+    }
+
+    // Mostrando o resultado da busca.
+    function mPesquisa(film){
+        var mostar = "";
+        var i;
+        for(i = 0; i < film.length; i++) {
+            mostar += '<div class="card" style="width: 15rem;">';
+            mostar += '<img class="img-thumbnail" alt="Imagem não Encontrada!" src="'+urlImg+'w200/'+film[i].poster_path+'">';
+            mostar += '<div class="card-body">';
+            mostar += '<h5 class="text-muted">'+film[i].title+'</h5>';
+            mostar += '<p class="card-text"><small class="text-muted">Titulo Original: '+film[i].original_title+'</small></p>'
+            mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+film[i].release_date+'</small></p>';
+            mostar += '<p class="card-text"><small class="text-muted">Média: '+film[i].vote_average+'</small></p>';
+            mostar += '<button type="button" class="btn btn-dark" id="btnDesejo" onclick="info('+film[i].id+')";>Add Lista Desejo</button>';
+            mostar += '</div>';
+            mostar += '</div>';
+        }
+        document.getElementById("root").innerHTML = mostar;
+    }   
+    
+    // Enviando Requisição.
+    request.send();
 }
-
-function weekFilmes() {
-	axios.get(Base_URL+'trending/movie/week?api_key='+API_key)
-		.then(function(response){
-		console.log(response);
-		var nomeFilme  =  response.data.results;
-		var cardFilme = '';
-		var weekTitle = '';
-		console.log(nomeFilme);
-
-		//criando Titulo
-		weekTitle += '<h1> Filmes em Destaque </h1>';
+//___________________________________________Fim Search__________________________________________________________________________________________
 
 
-		//Card dos Filmes
-		for (var i = 0; i < nomeFilme.length; i++) {
-			cardFilme += '<div class="card" style="width: 15rem;">';
-			cardFilme += '<img class="img-thumbnail" alt="Imagem não Encontrada!" src="'+Base_IMG+'w200/'+nomeFilme[i].poster_path+'">';
-			cardFilme += '<div class="card-body">';
-			cardFilme += '<h5 class="text-muted">'+nomeFilme[i].title+'</h5>';
-			cardFilme += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+nomeFilme[i].release_date+'</small></p>';
-			cardFilme += '<p class="card-text"><small class="text-muted">Média: '+nomeFilme[i].vote_average+'</small></p>';
-			cardFilme += '</div>';
-			cardFilme += '</div>';
-
-		console.log(nomeFilme[i].title);			
-		}
-		//mostrando html
-		document.getElementById('root').innerHTML = cardFilme;
-		document.getElementById('title').innerHTML = weekTitle;
-
-		
-	});
+// Pegando o id do Filme
+function info(idFilme){
+    sessionStorage.setItem("idFilme", idFilme);
 }

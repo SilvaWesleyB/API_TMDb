@@ -56,3 +56,9 @@ width: 87%
 h1{
   margin: auto;
 }
+
+#form{
+  float: right;
+  margin-top: 5px;
+  margin-right: 5px;
+}
