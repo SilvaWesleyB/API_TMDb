@@ -1,5 +1,5 @@
 // Variaveis 
-var urlBase ="https://api.themoviedb.org/3/"
+var urlBase ='https://api.themoviedb.org/3/';
 var urlImg = 'https://image.tmdb.org/t/p/';
 var apiKey = "0ee05a8fe5aefee62bbcafda1e92b900";
 
@@ -27,18 +27,18 @@ function weekFilmes(film) {
 		mostar += '<img class="img-thumbnail" alt="Imagem não Encontrada!" src="'+urlImg+'w200/'+film[i].poster_path+'">';
 		mostar += '<div class="card-body">';
 		mostar += '<h5 class="text-muted" id="titulo">'+film[i].title+'</h5>';
+        mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+film[i].overview+'</small></p>';
 		mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+film[i].release_date+'</small></p>';
 		mostar += '<p class="card-text"><small class="text-muted">Média: '+film[i].vote_average+'</small></p>';
-        mostar += '<input style="display:none" id="idFilme" value="'+film[i].id+'">';
-        mostar += '<input type="button" class="btn btn-dark" value="Add Lista Desejo" onClick="sTitulo()">';
+        mostar += '<input type="button" class="btn btn-dark" value="Add Lista Desejo" onClick="filme('+film[i].id+')">';
 		mostar += '</div>';
 		mostar += '</div>';
     }
     document.getElementById("root").innerHTML = mostar;
     document.getElementById("title").innerHTML = title;
 }
-
 //__________________________________________Fim Week___________________________________________________________________________________
+
 // Variavel que pega o Botao.
 var pPesquisa = document.getElementById("pPesquisa");
 
@@ -82,39 +82,53 @@ pPesquisa.onclick = function () {
             mostar += '<div class="card-body">';
             mostar += '<h5 class="text-muted" id="titulo">'+film[i].title+'</h5>';
             mostar += '<p class="card-text"><small class="text-muted">Titulo Original: '+film[i].original_title+'</small></p>'
+            mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+film[i].overview+'</small></p>';
             mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+film[i].release_date+'</small></p>';
             mostar += '<p class="card-text"><small class="text-muted">Média: '+film[i].vote_average+'</small></p>';
-            mostar += '<input style="display:none" id="idFilme" value="'+film[i].id+'">';
-            mostar += '<input type="button" class="btn btn-dark" value="Add Lista Desejo" onClick="sTitulo()">';
+            mostar += '<input type="button" class="btn btn-dark" value="Add Lista Desejo" onClick="filme('+film[i].id+')">';
             mostar += '</div>';
             mostar += '</div>';
         }
         document.getElementById("root").innerHTML = mostar;
-        document.getElementById("title").innerHTML = title;
+        document.getElementById("title").innerHTML = title;      
     }
     // Enviando Requisição.
     request.send();
 }
 //___________________________________________Fim Search__________________________________________________________________________________________
 
-function sTitulo(title) {
-    var idFilme = document.getElementById('idFilme').value;
+function filme(id) {
+    idFilme = (id);
 
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
             var data = JSON.parse(this.responseText);
-            lsFilme(data);
+            Adicionar(data);
         }
     };
     request.open("GET", urlBase+"movie/"+idFilme+"?api_key="+apiKey, true);
     request.send();
-
-    function lsFilme(film) {
-        var title = "";
-
-        title+= film.title;
-
-        localStorage.setItem("Titulo", title);
+    
+function Adicionar(film) {
+    var listDesejo = [];
+    listDesejo = localStorage.getItem("Lista Desejo");
+    listDesejo = JSON.parse(listDesejo);
+    if (listDesejo == null) {
+        listDesejo = [];
     }
+    var filme = JSON.stringify({
+        id: film.id,
+        title: film.title,
+        poster_path: film.poster_path,
+        original_title: film.original_title,
+        release_date: film.release_date,
+        overview: film.overview,
+        vote_average: film.vote_average
+    });
+    listDesejo.push(filme);
+    localStorage.setItem("Lista Desejo", JSON.stringify(listDesejo));
+    alert("Filme Adicionado a lista de Desejo");
+    return true;
+  }
 }
