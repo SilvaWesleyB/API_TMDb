@@ -62,3 +62,18 @@ h1{
   margin-top: 6px;
   margin-right: 5px;
 }
+p{
+  white-space: nowrap;
+  width: 17.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#btnButton{
+  margin-right: 35px;
+}
+
+#btnButton2{
+  margin-left: 10px;
+  margin-right: 63px;
+}
