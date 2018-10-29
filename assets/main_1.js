@@ -1,7 +1,20 @@
-// Variaveis 
+// Variaveis Globais
 var urlBase ='https://api.themoviedb.org/3/';
 var urlImg = 'https://image.tmdb.org/t/p/';
 var apiKey = "0ee05a8fe5aefee62bbcafda1e92b900";
+
+// Requisição das Configurações da API
+var xhr = new XMLHttpRequest();
+
+xhr.addEventListener("readystatechange", function () {
+  if (this.readyState === this.DONE) {
+    (this.responseText);
+  }
+});
+// Abrindo Requisição.
+xhr.open("GET", urlBase+"configuration?api_key="+apiKey);
+// Enviando Requisição.
+xhr.send();
 
 // Requisição Week/Movie pelo XMLHttp 
 var request = new XMLHttpRequest();
@@ -11,7 +24,9 @@ request.onreadystatechange = function() {
         weekFilmes(data.results);
     }
 };
+// Abrindo Requisição.
 request.open("GET", urlBase+"trending/movie/week?api_key="+apiKey+"&language=pt-BR", true);
+// Enviando Requisição.
 request.send();
 
 //Função após resposta XMLHttp
@@ -27,11 +42,11 @@ function weekFilmes(film) {
 		mostar += '<img class="img-thumbnail" alt="Imagem não Encontrada!" src="'+urlImg+'w300/'+film[i].poster_path+'">';
 		mostar += '<div class="card-body">';
 		mostar += '<h5>'+film[i].title+'</h5>';
-        mostar += '<p class="card-text"><small class="text-muted">Sinopse: '+film[i].overview+'</small></p>';
-		mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+film[i].release_date+'</small></p>';
-		mostar += '<p class="card-text"><small class="text-muted">Média: '+film[i].vote_average+'</small></p>';
+        mostar += '<p class="card-text"><small class="text-muted"><strong>Sinopse:</strong> '+film[i].overview+'</small></p>';
+		mostar += '<p class="card-text"><small class="text-muted"><strong>Data de Lançamento:</strong> '+film[i].release_date+'</small></p>';
+		mostar += '<p class="card-text"><small class="text-muted"><strong>Média:</strong> '+film[i].vote_average+'</small></p>';
         mostar += '<input id="btnButton" type="button" class="btn btn-dark" value="Lista Desejo" onClick="filme('+film[i].id+')">';
-        mostar += '<input type="button" class="btn btn-dark" value="+Informações" onClick="mais('+film[i].id+')">';
+        mostar += '<input type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-dark" value="+Informações" onClick="mais('+film[i].id+')">';
 		mostar += '</div>';
 		mostar += '</div>';
     }
@@ -49,6 +64,7 @@ pPesquisa.onclick = function () {
     // Pegadno Value
     var pValue = document.getElementById("pValue").value;
 
+    // Fazendo Requisição
     var request = new XMLHttpRequest();
     request.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -82,11 +98,11 @@ pPesquisa.onclick = function () {
             mostar += '<img class="img-thumbnail" alt="Imagem não Encontrada!" src="'+urlImg+'w300/'+film[i].poster_path+'">';
             mostar += '<div class="card-body">';
             mostar += '<h5>'+film[i].title+'</h5>';
-            mostar += '<p class="card-text"><small class="text-muted">Sinopse: '+film[i].overview+'</small></p>';
-            mostar += '<p class="card-text"><small class="text-muted">Data de Lançamento: '+film[i].release_date+'</small></p>';
-            mostar += '<p class="card-text"><small class="text-muted">Média: '+film[i].vote_average+'</small></p>';
+            mostar += '<p class="card-text"><small class="text-muted"><strong>Sinopse:</strong> '+film[i].overview+'</small></p>';
+            mostar += '<p class="card-text"><small class="text-muted"><strong>Data de Lançamento:</strong> '+film[i].release_date+'</small></p>';
+            mostar += '<p class="card-text"><small class="text-muted"><strong>Média:</strong> '+film[i].vote_average+'</small></p>';
             mostar += '<input id="btnButton" type="button" class="btn btn-dark" value="Lista Desejo" onClick="filme('+film[i].id+')">';
-            mostar += '<input type="button" class="btn btn-dark" value="+Informações" onClick="mais('+film[i].id+')">';
+            mostar += '<input type="button" data-toggle="modal" data-target=".bd-example-modal-lg" class="btn btn-dark" value="+Informações" onClick="mais('+film[i].id+')">';
             mostar += '</div>';
             mostar += '</div>';
         }
@@ -111,7 +127,9 @@ function filme(id) {
             Adicionar(data);
         }
     };
+    // Abrindo Requisição.
     request.open("GET", urlBase+"movie/"+idFilme+"?api_key="+apiKey+"&language=pt-BR", true);
+    // Enviando Requisição.
     request.send();
 
 //Função onde pega o que tem no local storage, caso nulo, ele atribui um array.     
@@ -142,5 +160,38 @@ function Adicionar(film) {
 }
 
 function mais(id) {
-    // body...
+    idFilme = (id);
+
+    //criando requisição
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            mInfo(data);
+        }
+    };
+    // Abrindo Requisição.
+    request.open("GET", urlBase+"movie/"+idFilme+"?api_key="+apiKey+"&language=pt-BR", true);
+    // Enviando Requisição.
+    request.send();
+
+    function mInfo(film) {
+        console.log(film)
+        var mostrar = "";
+        var produtora ="";
+        var i;
+
+        for (i = 0; i < film.production_companies.length; i++) {
+            produtora += '<img src="'+urlImg+'w92/'+film.production_companies[i].logo_path+'">';
+        }
+
+        mostrar += '<img class="card-img-top" alt="Imagem não Encontrada!" src="'+urlImg+'w500/'+film.backdrop_path+'">';
+        mostrar += '<h5>'+film.title+'</h5>';
+        mostrar += '<p class="card-text" style="overflow: visible; white-space: normal; width: auto; text-align: justify;"><small class="text-muted"><strong>Sinopse:</strong> '+film.overview+'</small></p>';
+        mostrar += '<p class="card-text"><small class="text-muted"><strong>Data de Lançamento:</strong> '+film.release_date+'</small></p>';
+        mostrar += '<p class="card-text"><small class="text-muted"><strong>Média:</strong> '+film.vote_average+'</small></p>';
+        mostrar += '<p class="card-text"><small class="text-muted"><strong>Produtora: </strong></small></p>'+produtora+'';
+        
+        document.getElementById("mOutros").innerHTML = mostrar;
+    }
 }
